@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="matic.mladen.chatapplication.MessageActivity"
+    android:background="@drawable/first">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/mladen_25dp"
+        android:layout_marginStart="@dimen/mladen_25dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            tools:ignore="RtlHardcoded">
+
+            <Button
+                android:id="@+id/message_activity_log_out"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/mladen_12sp"
+                android:text="@string/log_out_button"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:gravity="bottom">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/message_activity_message_text"
+                    android:layout_width="460dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/message_text"
+                    android:selectAllOnFocus="false"
+                    android:singleLine="true"
+                    android:textSize="@dimen/mladen_12sp" />
+
+                <Button
+                    android:id="@+id/message_activity_send_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/mladen_12sp"
+                    android:text="@string/send_button"
+                    android:enabled="false"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

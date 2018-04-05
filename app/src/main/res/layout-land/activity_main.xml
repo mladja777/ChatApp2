@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="matic.mladen.chatapplication.MainActivity">
+
+    <LinearLayout
+        android:id="@+id/background_image_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/street"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/mladen_50dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/edit_text_username"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/mladen_40dp"
+                android:hint="@string/mladen_username"
+                android:shadowColor="@color/pure_white"
+                android:textColor="@color/pure_white"
+                android:textColorHighlight="@color/pure_white"
+                android:textColorHint="@color/pure_white"
+                android:textColorLink="@color/pure_white" />
+
+            <EditText
+                android:id="@+id/edit_text_password"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/mladen_40dp"
+                android:hint="@string/mladen_password"
+                android:inputType="textPassword"
+                android:shadowColor="@color/pure_white"
+                android:textColor="@color/pure_white"
+                android:textColorHighlight="@color/pure_white"
+                android:textColorHint="@color/pure_white"
+                android:textColorLink="@color/pure_white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/mladen_25dp"
+            android:paddingStart="@dimen/mladen_55dp">
+
+            <Button
+                android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="25dp"
+                android:background="@drawable/responsive_buttons"
+                android:enabled="false"
+                android:text="@string/mladen_login_button"
+                android:textColor="@color/pure_white" />
+
+            <Button
+                android:id="@+id/register_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="25dp"
+                android:background="@drawable/responsive_buttons"
+                android:text="@string/mladen_register_button"
+                android:textColor="@color/pure_white" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

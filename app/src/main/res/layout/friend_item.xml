@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/mladen_40dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/friend_image"
+        android:layout_width="@dimen/mladen_40dp"
+        android:layout_height="@dimen/mladen_40dp"
+        android:gravity="center"
+        android:textSize="@dimen/mladen_25sp"
+        android:textAllCaps="true"
+        android:background="@color/not_translucent_blue"
+        android:orientation="horizontal" />
+
+    <TextView
+        android:id="@+id/friend_name"
+        android:gravity="center_vertical"
+        android:layout_toEndOf="@id/friend_image"
+        android:paddingStart="@dimen/malden_10dp"
+        android:textColor="@color/pure_white"
+        android:background="@color/transparent_pure_white"
+        android:text="@string/sample_text"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/mladen_40dp"
+        tools:ignore="RtlSymmetry" />
+
+    <ImageView
+        android:layout_alignRight="@id/friend_name"
+        android:id="@+id/friend_symbol"
+        android:layout_width="@dimen/mladen_40dp"
+        android:layout_height="@dimen/mladen_40dp"
+        android:background="@drawable/send_button"
+        android:foregroundGravity="right" />
+
+</RelativeLayout>

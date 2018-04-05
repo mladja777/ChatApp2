@@ -1,0 +1,23 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="mladen_padding_start_100">100dp</dimen>
+    <dimen name="mladen_50dp">50dp</dimen>
+    <dimen name="mladen_300dp">300dp</dimen>
+    <dimen name="mladen_55dp">55dp</dimen>
+    <dimen name="mladen_150dp">150dp</dimen>
+    <dimen name="mladen_25dp">25dp</dimen>
+    <dimen name="malden_10dp">10dp</dimen>
+    <dimen name="mladen_200dp">200dp</dimen>
+    <dimen name="mladen_40dp">40dp</dimen>
+    <dimen name="mladen_35dp">35dp</dimen>
+    <dimen name="mladen_250dp">250dp</dimen>
+    <dimen name="mladen_12sp">12sp</dimen>
+    <dimen name="mladen_100dp">100dp</dimen>
+    <dimen name="contacts_50dp">50dp</dimen>
+    <dimen name="cont_40sp">40sp</dimen>
+    <dimen name="mladen_25sp">25sp</dimen>
+    <dimen name="mladen_20sp">20sp</dimen>
+    <dimen name="mladen_15sp">15sp</dimen>
+</resources>

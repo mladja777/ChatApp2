@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="matic.mladen.chatapplication.MessageActivity"
+    android:background="@drawable/first">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name_to_send_to"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_margin="@dimen/malden_10dp"
+            android:layout_width="@dimen/mladen_250dp"
+            android:layout_height="wrap_content"
+            android:text="@string/connected_to"
+            android:textSize="@dimen/mladen_20sp"/>
+
+        <Button
+            android:id="@+id/message_activity_log_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/mladen_12sp"
+            android:text="@string/log_out_button"
+            android:layout_alignParentEnd="true"/>
+
+        <ListView
+            android:id="@+id/list_of_messages"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@id/message_activity_log_out"
+            android:layout_above="@id/message_activity_send_button"/>
+
+        <EditText
+            android:id="@+id/message_activity_message_text"
+            android:layout_width="@dimen/mladen_250dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/message_text"
+            android:textSize="@dimen/mladen_12sp"
+            android:layout_alignParentBottom="true"/>
+
+        <Button
+            android:id="@+id/message_activity_send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/mladen_12sp"
+            android:text="@string/send_button"
+            android:enabled="false"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
