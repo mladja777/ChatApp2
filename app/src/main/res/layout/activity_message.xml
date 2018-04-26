@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="matic.mladen.chatapplication.MessageActivity"
-    android:background="@drawable/first">
+    android:background="@drawable/first"
+    tools:context="matic.mladen.chatapplication.MessageActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,46 +14,48 @@
 
         <TextView
             android:id="@+id/name_to_send_to"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimary"
-            android:layout_margin="@dimen/malden_10dp"
             android:layout_width="@dimen/mladen_250dp"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/malden_10dp"
             android:text="@string/connected_to"
-            android:textSize="@dimen/mladen_20sp"/>
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/mladen_20sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/message_activity_log_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/mladen_12sp"
+            android:layout_alignParentEnd="true"
             android:text="@string/log_out_button"
-            android:layout_alignParentEnd="true"/>
+            android:textSize="@dimen/mladen_12sp" />
 
         <ListView
             android:id="@+id/list_of_messages"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_above="@id/message_activity_send_button"
             android:layout_below="@id/message_activity_log_out"
-            android:layout_above="@id/message_activity_send_button"/>
+            android:stackFromBottom="true"
+            android:transcriptMode="alwaysScroll" />
 
         <EditText
             android:id="@+id/message_activity_message_text"
             android:layout_width="@dimen/mladen_250dp"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:hint="@string/message_text"
-            android:textSize="@dimen/mladen_12sp"
-            android:layout_alignParentBottom="true"/>
+            android:textSize="@dimen/mladen_12sp" />
 
         <Button
             android:id="@+id/message_activity_send_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/mladen_12sp"
-            android:text="@string/send_button"
-            android:enabled="false"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            android:enabled="false"
+            android:text="@string/send_button"
+            android:textSize="@dimen/mladen_12sp" />
 
     </RelativeLayout>
 

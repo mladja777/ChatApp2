@@ -62,25 +62,24 @@ public class MessageAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         View message_view = view;
 
-        if(message_view == null) {
+        if (message_view == null) {
             LayoutInflater inflater = (LayoutInflater) message_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             message_view = inflater.inflate(R.layout.message_item, null);
             MessageHolder messageHolder = new MessageHolder();
-            messageHolder.message = view.findViewById(R.id.message_text);
+            messageHolder.message = message_view.findViewById(R.id.message_text);
 
-            view.setTag(messageHolder);
+            message_view.setTag(messageHolder);
         }
 
         Message message = (Message) getItem(i);
-        MessageHolder messageHolder = (MessageHolder) view.getTag();
+        MessageHolder messageHolder = (MessageHolder) message_view.getTag();
         messageHolder.message.setText(message.getMessage());
 
-        if(counter%2 == 0) {
+        if (counter % 2 == 0) {
             messageHolder.message.setBackgroundColor(Color.WHITE);
             messageHolder.message.setGravity(Gravity.RIGHT);
             counter++;
-        }
-        else {
+        } else {
             messageHolder.message.setBackgroundColor(Color.GRAY);
             messageHolder.message.setGravity(Gravity.LEFT);
             counter++;
@@ -89,6 +88,15 @@ public class MessageAdapter extends BaseAdapter {
         return message_view;
     }
 
+    public void update(Message[] messages) {
+        if(messages != null) {
+            for(Message tmp : messages) {
+                this.messages.add(tmp);
+            }
+        }
+
+        notifyDataSetChanged();
+    }
     public class MessageHolder {
         public TextView message = null;
     }

@@ -14,6 +14,7 @@ import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -32,6 +33,8 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher{
     private CheckBox     register_activity_checkbox;
 
     private CalendarView register_activity_calendar;
+
+    private ContactDatabaseHelper mContactDatabaseHelper;
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -53,6 +56,8 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher{
 
         register_activity_calendar   = findViewById(R.id.register_activity_calendar);
 
+        mContactDatabaseHelper = new ContactDatabaseHelper(this);
+
         Calendar support_calendar = Calendar.getInstance();
         register_activity_calendar.setMaxDate(support_calendar.getTimeInMillis());
 
@@ -69,7 +74,7 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher{
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!(register_activity_username.getText().length() < 1 || register_activity_email.getText().length() < 1 || register_activity_password.getText().length() < 1)) {
+                if (!(register_activity_username.getText().length() < 1 || register_activity_email.getText().length() < 1 || register_activity_password.getText().length() < 1 || register_activity_first_name.getText().length() < 1)) {
                     register_activity_button.setEnabled(true);
                 } else {
                     register_activity_button.setEnabled(false);
@@ -90,7 +95,7 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher{
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(!(register_activity_username.getText().length() < 1 || register_activity_email.getText().length() < 1 || register_activity_password.getText().length() < 1))
+                if(!(register_activity_username.getText().length() < 1 || register_activity_email.getText().length() < 1 || register_activity_password.getText().length() < 1 || register_activity_first_name.getText().length() < 1))
                 {
                     register_activity_button.setEnabled(true);
                 }
@@ -140,9 +145,22 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher{
         register_activity_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent register_activity_contacts_activity_intent = new Intent(RegisterActivity.this, ContactsActivity.class);
-                startActivity(register_activity_contacts_activity_intent);
-                finish();
+                if(mContactDatabaseHelper.readContact(register_activity_username.getText().toString()) == null) {
+                    Contact[] tmp = mContactDatabaseHelper.readContacts("");
+                    int id = 0;
+                    if(tmp != null) {
+                        for(Contact it : tmp) {
+                            id++;
+                        }
+                    }
+                    Contact contact = new Contact(id, register_activity_username.getText().toString(), register_activity_first_name.getText().toString(), register_activity_last_name.getText().toString());
+                    mContactDatabaseHelper.insertContact(contact);
+                    Intent register_activity_contacts_activity_intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    register_activity_contacts_activity_intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(register_activity_contacts_activity_intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "User is not registered!", Toast.LENGTH_LONG).show();
+                }
             }
         });
 

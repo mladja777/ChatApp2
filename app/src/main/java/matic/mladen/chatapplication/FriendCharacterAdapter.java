@@ -20,14 +20,14 @@ import java.util.Random;
 
 public class FriendCharacterAdapter extends BaseAdapter {
     private Context friend_context;
-    private ArrayList<FriendCharacter> friend_characters;
+    private ArrayList<Contact> friend_characters;
 
     public FriendCharacterAdapter(Context context) {
         this.friend_context = context;
-        friend_characters = new ArrayList<FriendCharacter>();
+        friend_characters = new ArrayList<>();
     }
 
-    public void addCharacter(FriendCharacter friend_character) {
+    public void addCharacter(Contact friend_character) {
         friend_characters.add(friend_character);
         notifyDataSetChanged();
     }
@@ -70,13 +70,24 @@ public class FriendCharacterAdapter extends BaseAdapter {
             view.setTag(holder);
         }
 
-        FriendCharacter friend_character = (FriendCharacter) getItem(position);
+        Contact friend_character = (Contact) getItem(position);
         ViewHolder holder = (ViewHolder) view.getTag();
-        holder.name.setText(friend_character.getFriend_name());
-        String[] string_parts = friend_character.getFriend_name().split("");
+        holder.name.setText(friend_character.getFirstName() + " " + friend_character.getLastName());
+        String[] string_parts = friend_character.getFirstName().split("");
         holder.image.setText(string_parts[1]);
 
         return view;
+    }
+
+    public void update(Contact[] contacts) {
+        friend_characters.clear();
+        if(contacts != null) {
+            for(Contact contact : contacts) {
+                friend_characters.add(contact);
+            }
+        }
+
+        notifyDataSetChanged();
     }
 
     private class ViewHolder {

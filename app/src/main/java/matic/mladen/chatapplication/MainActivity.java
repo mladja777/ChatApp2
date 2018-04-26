@@ -1,6 +1,8 @@
 package matic.mladen.chatapplication;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import static matic.mladen.chatapplication.R.color.black;
 import static matic.mladen.chatapplication.R.drawable.branch;
@@ -25,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Button   login_button;
     private Button   register_button;
 
-
+    private ContactDatabaseHelper mContactDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
         login_button      = (Button)   findViewById(R.id.login_button);
         register_button   = (Button)   findViewById(R.id.register_button);
+
+        mContactDatabaseHelper = new ContactDatabaseHelper(this);
 
         if(!(login_button.isEnabled())) {
             login_button.setVisibility(View.INVISIBLE);
@@ -95,18 +100,33 @@ public class MainActivity extends AppCompatActivity {
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent contacts_activity_intent = new Intent(MainActivity.this, ContactsActivity.class);
-                startActivity(contacts_activity_intent);
-                finish();
+                Contact contact = mContactDatabaseHelper.readContact(username_edittext.getText().toString());
+                if(contact != null) {
+                    Intent contacts_activity_intent = new Intent(MainActivity.this, ContactsActivity.class);
+                    SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("users", contact.getUsername());
+                    editor.apply();
+                    username_edittext.setText("");
+                    username_edittext.setHint("username");
+                    password_edittext.setText("");
+                    password_edittext.setHint("password");
+                    startActivity(contacts_activity_intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "User is not registered!", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
         register_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                username_edittext.setText("");
+                username_edittext.setHint("username");
+                password_edittext.setText("");
+                password_edittext.setHint("password");
                 Intent register_activity_intent = new Intent(MainActivity.this, RegisterActivity.class);
                 startActivity(register_activity_intent);
-                finish();
             }
         });
     }

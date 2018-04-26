@@ -9,7 +9,7 @@
         android:id="@+id/message_text"
         android:gravity="center_vertical"
         android:text="@string/mladen_test"
-        android:textSize="@dimen/mladen_15sp"
+        android:textSize="@dimen/mladen_20sp"
         android:background="@color/colorPrimary"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />

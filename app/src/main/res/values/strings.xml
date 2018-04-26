@@ -34,6 +34,7 @@
 
     <string name="connected_to">example</string>
     <string name="mladen_test">TEST</string>
+    <string name="db_bracket">(</string>
 
     <string-array name="spinner_array">
         <item>MALE</item>

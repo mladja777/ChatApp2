@@ -8,6 +8,8 @@ import java.util.Random;
 
 /**
  * Created by Mladen on 3/30/2018.
+ *
+ * !!!!!!!!!!!!!! FIRST VERSION
  */
 
 public class FriendCharacter {
