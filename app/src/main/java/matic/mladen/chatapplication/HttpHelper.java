@@ -37,7 +37,7 @@ public class HttpHelper {
         } catch (IOException e) {
             return null;
         }
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
         StringBuilder stringBuilder = new StringBuilder();
         String line;
         Log.i("MSG", "Dosao do while-a posle string builder-a i line-a.");
@@ -69,7 +69,7 @@ public class HttpHelper {
         } catch (IOException e) {
             return null;
         }
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
         StringBuilder stringBuilder = new StringBuilder();
         String line;
         while((line = bufferedReader.readLine()) != null) {

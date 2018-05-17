@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Button   login_button;
     private Button   register_button;
 
+    private Handler mHandler;
     private HttpHelper mHttpHelper;
 
     private ContactDatabaseHelper mContactDatabaseHelper;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("MSG", "Dosao do http helper-a.");
         mHttpHelper = new HttpHelper();
+        mHandler = new Handler();
         Log.i("MSG", "Odradio inicijalizaciju http helper-a.");
 
         username_edittext = (EditText) findViewById(R.id.edit_text_username);
@@ -129,25 +131,37 @@ public class MainActivity extends AppCompatActivity {
                                 editor.putString("users", username_edittext.getText().toString());
                                 editor.putString("sessionId", response.mSessionId);
                                 editor.apply();
+                                /*
                                 username_edittext.setText("");
                                 username_edittext.setHint("username");
                                 password_edittext.setText("");
                                 password_edittext.setHint("password");
+                                */
                                 Log.i("MSG", "Odradio login. Mesto pre startActivity().");
                                 startActivity(contacts_activity_intent);
                             } else if(response.mResponseCode == 404) {
-                                new Runnable(){
+                                mHandler.post(new Runnable(){
                                     @Override
                                     public void run() {
                                         Toast.makeText(getApplicationContext(), "WRONG PASSWORD!", Toast.LENGTH_LONG).show();
                                     }
-                                };
+                                });
                                 Log.i("MSG", "Baca 404.");
                             } else if(response.mResponseCode == 409) {
-                                Toast.makeText(getApplicationContext(), "WRONG USER", Toast.LENGTH_LONG).show();
+                                mHandler.post(new Runnable(){
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(), "WRONG USER!", Toast.LENGTH_LONG).show();
+                                    }
+                                });
                                 Log.i("MSG", "Baca 409.");
                             } else {
-                                Toast.makeText(getApplicationContext(), "INTERNAL ERROR!", Toast.LENGTH_LONG).show();
+                                mHandler.post(new Runnable(){
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(), "ERROR!", Toast.LENGTH_LONG).show();
+                                    }
+                                });
                                 Log.i("MSG", "Nepoznat kod vraca pri login-u.");
                             }
 

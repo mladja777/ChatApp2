@@ -3,6 +3,7 @@ package matic.mladen.chatapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,10 +37,11 @@ public class MessageActivity extends AppCompatActivity {
     private ContactDatabaseHelper mContactDatabaseHelper;
     private MessageDatabaseHelper mMessageDatabaseHelper;
 
-    private Contact mMe;
-    private Contact mFriend;
+    private String mMe;
+    private String mFriend;
 
     private HttpHelper mHttpHelper;
+    private Handler mHandler;
     private String mSessionId;
 
     @Override
@@ -48,6 +50,7 @@ public class MessageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message);
 
         mHttpHelper = new HttpHelper();
+        mHandler = new Handler();
 
         adapter = new MessageAdapter(this);
         mContactDatabaseHelper = new ContactDatabaseHelper(this);
@@ -71,19 +74,21 @@ public class MessageActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle = getIntent().getExtras();
         String connected_to = bundle.getString(String.valueOf(R.string.connected_to));
-
+        mFriend = connected_to;
+        /*
         mFriend = mContactDatabaseHelper.readContact(connected_to);
-
+        */
         SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
         String username = sharedPreferences.getString("users", "ERROR");
-
+        mMe = username;
+        /*
         Contact[] contacts = mContactDatabaseHelper.readContacts("");
         for (Contact tmp : contacts) {
             if(tmp.getUsername().equals(username)) {
                 mMe = tmp;
             }
         }
-
+        */
         //friend_to_send_to.setText(mFriend.getFirstName());
 
         ListView list = findViewById(R.id.list_of_messages);
@@ -106,11 +111,16 @@ public class MessageActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             final HttpHelper.RetrunClass response = mHttpHelper.postJSONObjectFromURL("http://18.205.194.168:80/logout", new JSONObject(), mSessionId);
-                            if(response.mResponseCode == 200) {
-                                Toast.makeText(getApplicationContext(), "USER LOGGED OUT!", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(getApplicationContext(), "FATAL ERROR!", Toast.LENGTH_LONG).show();
-                            }
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(response.mResponseCode == 200) {
+                                        Toast.makeText(getApplicationContext(), "USER LOGGED OUT!", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "FATAL ERROR!", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
@@ -160,17 +170,22 @@ public class MessageActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             JSONObject jsonObject = new JSONObject();
-                            jsonObject.put("receiver", mMe);
+                            jsonObject.put("receiver", mFriend);
                             jsonObject.put("data", message_activity_message_text.getText().toString());
                             final HttpHelper.RetrunClass response = mHttpHelper.postJSONObjectFromURL("http://18.205.194.168:80/message", jsonObject, mSessionId);
-                            if(response.mResponseCode == 200) {
-                                adapter.addMessage(new matic.mladen.chatapplication.Message(message_activity_message_text.getText().toString(), false));
-                                adapter.notifyDataSetChanged();
-                                message_activity_message_text.setText("");
-                                Toast.makeText(getApplicationContext(), "MESSAGE SENT!", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(getApplicationContext(), "FATAL ERROR!", Toast.LENGTH_LONG).show();
-                            }
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(response.mResponseCode == 200) {
+                                        adapter.addMessage(new matic.mladen.chatapplication.Message(message_activity_message_text.getText().toString(), false));
+                                        adapter.notifyDataSetChanged();
+                                        message_activity_message_text.setText("");
+                                        Toast.makeText(getApplicationContext(), "MESSAGE SENT!", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "FATAL ERROR!", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
@@ -196,9 +211,14 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    JSONArray jsonArray = mHttpHelper.getJSONArrayFromURL("http://18.205.194.168:80/message/" + mMe, mSessionId);
+                    JSONArray jsonArray = mHttpHelper.getJSONArrayFromURL("http://18.205.194.168:80/message/" + mFriend, mSessionId);
                     if(jsonArray == null) {
-                        Toast.makeText(getApplicationContext(), "FATAL ERROR!", Toast.LENGTH_LONG).show();
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "FATAL ERROR!", Toast.LENGTH_LONG).show();
+                            }
+                        });
                         Intent back_to_login = new Intent(getApplicationContext(), MainActivity.class);
                         back_to_login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(back_to_login);
@@ -214,9 +234,13 @@ public class MessageActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
-                } finally {
-                    adapter.notifyDataSetChanged();
                 }
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             }
         }).start();
     }

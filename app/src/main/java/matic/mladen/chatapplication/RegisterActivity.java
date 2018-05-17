@@ -2,6 +2,7 @@ package matic.mladen.chatapplication;
 
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher{
     private ContactDatabaseHelper mContactDatabaseHelper;
 
     private HttpHelper mHttpHelper;
+    private Handler mHandler;
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -51,6 +53,7 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher{
         setContentView(R.layout.activity_register);
 
         mHttpHelper = new HttpHelper();
+        mHandler = new Handler();
 
         register_activity_button     = findViewById(R.id.register_activity_register_button);
 
@@ -170,16 +173,22 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher{
 
                             final HttpHelper.RetrunClass response = mHttpHelper.postJSONObjectFromURL("http://18.205.194.168:80/register", jsonObject);
 
-                            if(response.mResponseCode == 200) {
-                                Toast.makeText(getApplicationContext(), "REGISTERED!", Toast.LENGTH_LONG).show();
-                                Intent intent_to_login = new Intent(getApplicationContext(), MainActivity.class);
-                                intent_to_login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent_to_login);
-                            }  else if(response.mResponseCode == 409) {
-                                Toast.makeText(getApplicationContext(), "USER EXISTS!", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(getApplicationContext(), "INTERNAL ERROR!", Toast.LENGTH_LONG).show();
-                            }
+                            mHandler.post(new Runnable(){
+                                @Override
+                                public void run() {
+                                    if(response.mResponseCode == 200) {
+
+                                        Toast.makeText(getApplicationContext(), "REGISTERED!", Toast.LENGTH_LONG).show();
+                                        Intent intent_to_login = new Intent(getApplicationContext(), MainActivity.class);
+                                        intent_to_login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent_to_login);
+                                    }  else if(response.mResponseCode == 409) {
+                                                Toast.makeText(getApplicationContext(), "USER EXISTS!", Toast.LENGTH_LONG).show();
+                                    } else {
+                                                Toast.makeText(getApplicationContext(), "INTERNAL ERROR!", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (IOException e) {

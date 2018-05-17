@@ -29,12 +29,10 @@ public class MessageAdapter extends BaseAdapter {
 
     public void addMessage(Message message) {
         messages.add(message);
-        notifyDataSetChanged();
     }
 
     public void clear() {
         messages.clear();
-        notifyDataSetChanged();
     }
 
     @Override

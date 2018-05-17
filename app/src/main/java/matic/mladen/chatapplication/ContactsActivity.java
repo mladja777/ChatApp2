@@ -29,6 +29,7 @@ public class ContactsActivity extends AppCompatActivity {
     private Button   contacts_activity_refresh;
 
     private HttpHelper mHttpHelper;
+    private Handler mHandler;
 
     private FriendCharacterAdapter adapter;
     private ContactDatabaseHelper mContactDatabaseHelper;
@@ -41,15 +42,16 @@ public class ContactsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contacts);
 
         mHttpHelper = new HttpHelper();
+        mHandler = new Handler();
 
         contacts_activity_log_out   = findViewById(R.id.contacts_activity_log_out);
         contacts_activity_refresh   = findViewById(R.id.contacts_activity_refresh);
 
         mContactDatabaseHelper = new ContactDatabaseHelper(this);
         adapter = new FriendCharacterAdapter(this);
-
+        /*
         Contact[] contacts = mContactDatabaseHelper.readContacts("");
-
+        */
         SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
         mUsername = sharedPreferences.getString("users", "ERROR");
         mSessionId = sharedPreferences.getString("sessionId", "ERROR");
@@ -60,13 +62,13 @@ public class ContactsActivity extends AppCompatActivity {
             log_out_intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(log_out_intent);
         }
-
+        /*
         for(Contact contact : contacts) {
             if(!contact.getUsername().equals(mUsername)) {
                 adapter.addCharacter(contact);
             }
         }
-
+        */
         ListView list = findViewById(R.id.friend_list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new OnFriendClickListener());
@@ -79,11 +81,19 @@ public class ContactsActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             final HttpHelper.RetrunClass response = mHttpHelper.postJSONObjectFromURL("http://18.205.194.168:80/logout", new JSONObject(), mSessionId);
-                            if(response.mResponseCode == 200) {
-                                Toast.makeText(getApplicationContext(), "USER LOGGED OUT!", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(getApplicationContext(), "FATAL ERROR!", Toast.LENGTH_LONG).show();
-                            }
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(response.mResponseCode == 200) {
+                                        Toast.makeText(getApplicationContext(), "USER LOGGED OUT!", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "FATAL ERROR!", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                            Intent log_out_intent = new Intent(ContactsActivity.this, MainActivity.class);
+                            log_out_intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(log_out_intent);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
@@ -145,11 +155,17 @@ public class ContactsActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
-                } finally {
-                    adapter.notifyDataSetChanged();
                 }
+                Log.i("MSG", "Dosao do kraja treda.");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             }
         }).start();
+        Log.i("MSG", "Dosao do notify.");
     }
 }
 

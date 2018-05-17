@@ -29,7 +29,6 @@ public class FriendCharacterAdapter extends BaseAdapter {
 
     public void addCharacter(Contact friend_character) {
         friend_characters.add(friend_character);
-        notifyDataSetChanged();
     }
 
     public void clear() {
