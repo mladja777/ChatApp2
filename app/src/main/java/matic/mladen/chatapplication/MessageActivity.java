@@ -16,8 +16,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 public class MessageActivity extends AppCompatActivity {
     private Button   message_activity_log_out;
+    private Button   message_activity_refresh;
     private Button   message_activity_send_button;
 
     private TextView friend_to_send_to;
@@ -32,10 +39,15 @@ public class MessageActivity extends AppCompatActivity {
     private Contact mMe;
     private Contact mFriend;
 
+    private HttpHelper mHttpHelper;
+    private String mSessionId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+
+        mHttpHelper = new HttpHelper();
 
         adapter = new MessageAdapter(this);
         mContactDatabaseHelper = new ContactDatabaseHelper(this);
@@ -49,6 +61,7 @@ public class MessageActivity extends AppCompatActivity {
         adapter.addMessage(new matic.mladen.chatapplication.Message("Au revoir!"));*/
 
         message_activity_log_out      = findViewById(R.id.message_activity_log_out);
+        message_activity_refresh      = findViewById(R.id.message_activity_refresh);
         message_activity_send_button  = findViewById(R.id.message_activity_send_button);
 
         message_activity_message_text = findViewById(R.id.message_activity_message_text);
@@ -71,7 +84,7 @@ public class MessageActivity extends AppCompatActivity {
             }
         }
 
-        friend_to_send_to.setText(mFriend.getFirstName());
+        //friend_to_send_to.setText(mFriend.getFirstName());
 
         ListView list = findViewById(R.id.list_of_messages);
         list.setAdapter(adapter);
@@ -88,9 +101,30 @@ public class MessageActivity extends AppCompatActivity {
         message_activity_log_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent log_out_intent = new Intent(MessageActivity.this, MainActivity.class);
-                log_out_intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(log_out_intent);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            final HttpHelper.RetrunClass response = mHttpHelper.postJSONObjectFromURL("http://18.205.194.168:80/logout", new JSONObject(), mSessionId);
+                            if(response.mResponseCode == 200) {
+                                Toast.makeText(getApplicationContext(), "USER LOGGED OUT!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "FATAL ERROR!", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+        });
+
+        message_activity_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refresh();
             }
         });
 
@@ -121,7 +155,76 @@ public class MessageActivity extends AppCompatActivity {
         message_activity_send_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MessageActivity.this, "Message has been sent.", Toast.LENGTH_LONG).show();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("receiver", mMe);
+                            jsonObject.put("data", message_activity_message_text.getText().toString());
+                            final HttpHelper.RetrunClass response = mHttpHelper.postJSONObjectFromURL("http://18.205.194.168:80/message", jsonObject, mSessionId);
+                            if(response.mResponseCode == 200) {
+                                adapter.addMessage(new matic.mladen.chatapplication.Message(message_activity_message_text.getText().toString(), false));
+                                adapter.notifyDataSetChanged();
+                                message_activity_message_text.setText("");
+                                Toast.makeText(getApplicationContext(), "MESSAGE SENT!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "FATAL ERROR!", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refresh();
+    }
+
+    public void refresh() {
+        adapter.clear();
+        SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
+        mSessionId = sharedPreferences.getString("sessionId", "ERROR");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONArray jsonArray = mHttpHelper.getJSONArrayFromURL("http://18.205.194.168:80/message/" + mMe, mSessionId);
+                    if(jsonArray == null) {
+                        Toast.makeText(getApplicationContext(), "FATAL ERROR!", Toast.LENGTH_LONG).show();
+                        Intent back_to_login = new Intent(getApplicationContext(), MainActivity.class);
+                        back_to_login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(back_to_login);
+                    } else {
+                        for(int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String sender = jsonObject.getString("sender");
+                            String data = jsonObject.getString("data");
+                            adapter.addMessage(new matic.mladen.chatapplication.Message(data, sender.equals(mMe)));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }).start();
+    }
+
+}
+
+/*              P03 SEND BUTTON LISTENER - WORKING STATE
+Toast.makeText(MessageActivity.this, "Message has been sent.", Toast.LENGTH_LONG).show();
 
                 matic.mladen.chatapplication.Message message = new matic.mladen.chatapplication.Message(message_activity_message_text.getText().toString(), 0, mMe.getContactId(), mFriend.getContactId());
 
@@ -130,14 +233,4 @@ public class MessageActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
 
                 message_activity_message_text.setText("");
-            }
-        });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        matic.mladen.chatapplication.Message[] messages = mMessageDatabaseHelper.readMessages(mMe.getContactId(), mFriend.getContactId());
-        adapter.update(messages);
-    }
-}
+ */

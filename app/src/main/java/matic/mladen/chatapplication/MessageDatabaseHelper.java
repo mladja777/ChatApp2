@@ -44,10 +44,11 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         //values.put(COLUMN_MESSAGE_ID, message.getMessageId());
+        /*
         values.put(COLUMN_SENDER_ID, message.getSenderId());
         values.put(COLUMN_RECEIVER_ID, message.getReceiverId());
         values.put(COLUMN_MESSAGE, message.getMessage());
-
+        */
         database.insert(TABLE_NAME, null, values);
         close();
     }
@@ -96,6 +97,6 @@ public class MessageDatabaseHelper extends SQLiteOpenHelper {
         int receiverId = cursor.getInt(cursor.getColumnIndex(COLUMN_RECEIVER_ID));
         String message = cursor.getString(cursor.getColumnIndex(COLUMN_MESSAGE));
 
-        return new Message(message, messageId, senderId, receiverId);
+        return /*new Message(message, messageId, senderId, receiverId)*/null;
     }
 }

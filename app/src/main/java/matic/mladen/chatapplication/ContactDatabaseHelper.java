@@ -47,9 +47,10 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         //values.put(COLUMN_CONTACT_ID, contact.getContactId());
         values.put(COLUMN_USERNAME, contact.getUsername());
+        /*
         values.put(COLUMN_FIRST_NAME, contact.getFirstName());
         values.put(COLUMN_LAST_NAME, contact.getLastName());
-
+        */
         database.insert(TABLE_NAME, null, values);
         close();
     }
@@ -96,7 +97,7 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
             String firstName = cursor.getString(cursor.getColumnIndex(COLUMN_FIRST_NAME));
             String lastName = cursor.getString(cursor.getColumnIndex(COLUMN_LAST_NAME));
 
-            return new Contact(contactId, username, firstName, lastName);
+            return /*new Contact(contactId, username, firstName, lastName)*/null;
         } catch (CursorIndexOutOfBoundsException e) {
             e.printStackTrace();
         }

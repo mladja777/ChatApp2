@@ -35,6 +35,13 @@
                 android:textSize="12sp"
                 android:text="@string/log_out_button"/>
 
+            <Button
+                android:id="@+id/contacts_activity_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="@string/refresh"/>
+
         </LinearLayout>
 
         <LinearLayout

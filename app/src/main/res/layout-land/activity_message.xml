@@ -26,9 +26,17 @@
             android:id="@+id/message_activity_log_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/mladen_12sp"
+            android:layout_toLeftOf="@id/message_activity_refresh"
             android:text="@string/log_out_button"
-            android:layout_alignParentEnd="true"/>
+            android:textSize="@dimen/mladen_12sp" />
+
+        <Button
+            android:id="@+id/message_activity_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:textSize="12sp"
+            android:text="@string/refresh"/>
 
         <ListView
             android:id="@+id/list_of_messages"

@@ -32,6 +32,11 @@ public class FriendCharacterAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void clear() {
+        friend_characters.clear();
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return friend_characters.size();
@@ -72,8 +77,8 @@ public class FriendCharacterAdapter extends BaseAdapter {
 
         Contact friend_character = (Contact) getItem(position);
         ViewHolder holder = (ViewHolder) view.getTag();
-        holder.name.setText(friend_character.getFirstName() + " " + friend_character.getLastName());
-        String[] string_parts = friend_character.getFirstName().split("");
+        holder.name.setText(friend_character.getUsername());
+        String[] string_parts = friend_character.getUsername().split("");
         holder.image.setText(string_parts[1]);
 
         return view;

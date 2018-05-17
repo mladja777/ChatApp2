@@ -6,15 +6,17 @@ package matic.mladen.chatapplication;
 
 public class Message {
     private String message;
-    private int mMessageId;
-    private int mSenderId;
-    private int mReceiverId;
+    //private int mMessageId;
+    //private int mSenderId;
+    //private int mReceiverId;
+    private boolean mACK;
 
-    public Message(String message, int messageId, int senderId, int receiverId) {
+    public Message(String message, boolean ACK/*int messageId, int senderId, int receiverId*/) {
         this.message = message;
-        this.mMessageId = messageId;
-        this.mReceiverId = receiverId;
-        this.mSenderId = senderId;
+        //this.mMessageId = messageId;
+        //this.mReceiverId = receiverId;
+        //this.mSenderId = senderId;
+        this.mACK = ACK;
     }
 
     public Message(String message) {
@@ -24,7 +26,7 @@ public class Message {
     public String getMessage() {
         return message;
     }
-
+    /*
     public int getMessageId() {
         return this.mMessageId;
     }
@@ -36,8 +38,12 @@ public class Message {
     public int getReceiverId() {
         return this.mReceiverId;
     }
-
+    */
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean getACK() {
+        return this.mACK;
     }
 }
