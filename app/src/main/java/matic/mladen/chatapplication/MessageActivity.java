@@ -96,10 +96,49 @@ public class MessageActivity extends AppCompatActivity {
 
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                adapter.remove(i);
-                adapter.notifyDataSetChanged();
-                return true;
+            public boolean onItemLongClick(final AdapterView<?> adapterView, View view, final int i, long l) {
+                /*PASS*/
+                final matic.mladen.chatapplication.Message message = (matic.mladen.chatapplication.Message) adapter.getItem(i);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONObject jsonObject = new JSONObject();
+                            if(message.getSenderUname().equals(mMe)) {
+                                jsonObject.put("receiver", mFriend);
+                                jsonObject.put("sender", mMe);
+                            } else {
+                                jsonObject.put("receiver", mMe);
+                                jsonObject.put("sender", mFriend);
+                            }
+                            jsonObject.put("data", message.getMessage());
+                            final HttpHelper.RetrunClass response = mHttpHelper.httpDelete("http://18.205.194.168:80/message", jsonObject, mSessionId);
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.remove(i);
+                                    if(response.mResponseCode == 200) {
+                                        Toast.makeText(getApplicationContext(), "MESSAGE DELETED!", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "MESSAGE DELETE PROCESS WENT WRONG!", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                }).start();
+
+                return false;
             }
         });
 
@@ -119,6 +158,9 @@ public class MessageActivity extends AppCompatActivity {
                                     } else {
                                         Toast.makeText(getApplicationContext(), "FATAL ERROR!", Toast.LENGTH_LONG).show();
                                     }
+                                    Intent log_out_intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    log_out_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(log_out_intent);
                                 }
                             });
                         } catch (JSONException e) {
@@ -177,7 +219,7 @@ public class MessageActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     if(response.mResponseCode == 200) {
-                                        adapter.addMessage(new matic.mladen.chatapplication.Message(message_activity_message_text.getText().toString(), false));
+                                        adapter.addMessage(new matic.mladen.chatapplication.Message(message_activity_message_text.getText().toString(), false, mFriend));
                                         adapter.notifyDataSetChanged();
                                         message_activity_message_text.setText("");
                                         Toast.makeText(getApplicationContext(), "MESSAGE SENT!", Toast.LENGTH_LONG).show();
@@ -227,7 +269,7 @@ public class MessageActivity extends AppCompatActivity {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             String sender = jsonObject.getString("sender");
                             String data = jsonObject.getString("data");
-                            adapter.addMessage(new matic.mladen.chatapplication.Message(data, sender.equals(mMe)));
+                            adapter.addMessage(new matic.mladen.chatapplication.Message(data, sender.equals(mMe), sender));
                         }
                     }
                 } catch (JSONException e) {
@@ -257,4 +299,10 @@ Toast.makeText(MessageActivity.this, "Message has been sent.", Toast.LENGTH_LONG
                 adapter.notifyDataSetChanged();
 
                 message_activity_message_text.setText("");
+ */
+
+/*              P03 ITEM LONG CLICK - LAST WORKING STATE
+adapter.remove(i);
+                adapter.notifyDataSetChanged();
+                return true;
  */

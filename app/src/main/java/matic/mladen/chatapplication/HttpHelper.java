@@ -136,21 +136,31 @@ public class HttpHelper {
         return responseCode == SUCCESS ? new RetrunClass(200, urlConnection.getHeaderField("sessionid")) : new RetrunClass(409, urlConnection.getHeaderField("sessionid"));
     }
 
-    public boolean httpDelete(String urlString) throws IOException, JSONException {
+    public RetrunClass httpDelete(String urlString, JSONObject jsonObject, String sessionId) throws IOException, JSONException {
         HttpURLConnection urlConnection = null;
         java.net.URL url = new URL(urlString);
         urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setRequestMethod("DELETE");
         urlConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
         urlConnection.setRequestProperty("Accept","application/json");
+        urlConnection.setRequestProperty("sessionid", sessionId);
+        urlConnection.setDoOutput(true);
+        urlConnection.setDoInput(true);
         try {
             urlConnection.connect();
         } catch (IOException e) {
-            return false;
+            Log.i("MSG", "DELETE bacio IO exception.");
+            return new RetrunClass(404, urlConnection.getHeaderField("sessionid"));
         }
+        DataOutputStream dataOutputStream = new DataOutputStream(urlConnection.getOutputStream());
+        dataOutputStream.writeBytes(jsonObject.toString());
+        dataOutputStream.flush();
+        dataOutputStream.close();
         int responseCode = urlConnection.getResponseCode();
         urlConnection.disconnect();
-        return responseCode == SUCCESS;
+        Log.i("MSG", "Dosao DELETE do return-a.");
+        Log.i("STATUS", String.valueOf(responseCode));
+        return new RetrunClass(responseCode, urlConnection.getHeaderField("sessionid"));
     }
 
     public class RetrunClass {

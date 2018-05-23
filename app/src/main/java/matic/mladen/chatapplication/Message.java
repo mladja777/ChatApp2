@@ -6,6 +6,7 @@ package matic.mladen.chatapplication;
 
 public class Message {
     private String message;
+    private String senderUname;
     //private int mMessageId;
     //private int mSenderId;
     //private int mReceiverId;
@@ -18,9 +19,21 @@ public class Message {
         //this.mSenderId = senderId;
         this.mACK = ACK;
     }
+    public Message(String message, boolean ACK/*int messageId, int senderId, int receiverId*/, String senderUname) {
+        this.message = message;
+        //this.mMessageId = messageId;
+        //this.mReceiverId = receiverId;
+        //this.mSenderId = senderId;
+        this.mACK = ACK;
+        this.senderUname = senderUname;
+    }
 
     public Message(String message) {
         this.message = message;
+    }
+
+    public String getSenderUname() {
+        return this.senderUname;
     }
 
     public String getMessage() {
