@@ -40,10 +40,17 @@ public class MainActivity extends AppCompatActivity {
 
     private ContactDatabaseHelper mContactDatabaseHelper;
 
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(new Intent(this, NotificationService.class));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        startService(new Intent(this, NotificationService.class));
 
         Log.i("MSG", "Dosao do http helper-a.");
         mHttpHelper = new HttpHelper();

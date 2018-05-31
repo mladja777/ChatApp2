@@ -1,10 +1,18 @@
 package matic.mladen.chatapplication;
 
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +32,7 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.prefs.Preferences;
 
-public class ContactsActivity extends AppCompatActivity {
+public class ContactsActivity extends AppCompatActivity implements ServiceConnection {
     private Button   contacts_activity_log_out;
     private Button   contacts_activity_refresh;
 
@@ -35,6 +43,9 @@ public class ContactsActivity extends AppCompatActivity {
     private ContactDatabaseHelper mContactDatabaseHelper;
     private String mUsername;
     private String mSessionId;
+
+    private NotificationBinder mNotificationBinder = null;
+    protected NotificationCompat.Builder mBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +80,7 @@ public class ContactsActivity extends AppCompatActivity {
             }
         }
         */
+
         ListView list = findViewById(R.id.friend_list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new OnFriendClickListener());
@@ -110,6 +122,15 @@ public class ContactsActivity extends AppCompatActivity {
                 refresh();
             }
         });
+
+        Intent intent = new Intent(this, NotificationService.class);
+        bindService(intent, this, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(this);
     }
 
     @Override
@@ -117,6 +138,18 @@ public class ContactsActivity extends AppCompatActivity {
         super.onResume();
 
         refresh();
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        mNotificationBinder = (NotificationBinder) NotificationBinder.Stub.asInterface(iBinder);
+
+        mNotificationBinder.setCallback(new YetAnotherCallback());
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+        mNotificationBinder = null;
     }
 
     private class OnFriendClickListener implements AdapterView.OnItemClickListener {
@@ -166,6 +199,38 @@ public class ContactsActivity extends AppCompatActivity {
             }
         }).start();
         Log.i("MSG", "Dosao do notify.");
+    }
+
+    private class YetAnotherCallback extends ICallbackExample.Stub {
+        private boolean mResponse;
+        private NotificationManagerCompat mNotificationManagerCompat = NotificationManagerCompat.from(ContactsActivity.this);
+
+        @Override
+        public void onCallbackCall() throws RemoteException {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        mResponse = mHttpHelper.getServiceFromURL("http://18.205.194.168:80/getfromservice", mSessionId);
+                        if (mResponse) {
+                            Intent intent = new Intent(getApplicationContext(), ContactsActivity.class);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                            mBuilder = new NotificationCompat.Builder(getApplicationContext());
+                            mBuilder.setSmallIcon(R.drawable.pepe);
+                            mBuilder.setContentTitle("Alert: ");
+                            mBuilder.setContentText("New message!");
+                            mBuilder.setContentIntent(pendingIntent);
+                            mBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                            mBuilder.setAutoCancel(true);
+                            mNotificationManagerCompat.notify(777, mBuilder.build());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
     }
 }
 

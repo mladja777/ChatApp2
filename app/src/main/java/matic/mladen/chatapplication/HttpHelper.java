@@ -12,6 +12,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.Buffer;
 
@@ -21,6 +22,38 @@ import java.nio.Buffer;
 
 public class HttpHelper {
     private static final int SUCCESS = 200;
+
+    public boolean getServiceFromURL(String urlString, String sessionId) throws IOException {
+        HttpURLConnection urlConnection = null;
+        java.net.URL url = new URL(urlString);
+        urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("Accept", "Application/json");
+        urlConnection.setReadTimeout(10000);
+        urlConnection.setConnectTimeout(15000);
+        urlConnection.setRequestProperty("sessionid", sessionId);
+
+        try {
+            urlConnection.connect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+
+        while ((line = bufferedReader.readLine()) != null) {
+            stringBuilder.append(line + "\n");
+        }
+        bufferedReader.close();
+
+        int responseCode = urlConnection.getResponseCode();
+        urlConnection.disconnect();
+
+        return responseCode == SUCCESS;
+    }
 
     public JSONArray getJSONArrayFromURL(String urlString, String sessionId) throws IOException, JSONException {
         HttpURLConnection urlConnection = null;
