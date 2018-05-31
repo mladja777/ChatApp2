@@ -4,7 +4,9 @@
     <modules>
       <module fileurl="file://C:\Users\Mladen\Documents\PNRS1P5\ChatApp2\Chat1.iml" filepath="C:\Users\Mladen\Documents\PNRS1P5\ChatApp2\Chat1.iml" />
       <module fileurl="file://$PROJECT_DIR$/ChatApp2.iml" filepath="$PROJECT_DIR$/ChatApp2.iml" />
+      <module fileurl="file://D:\Mladen_Matic_RA44-2015\ChatApp2\ChatApp2.iml" filepath="D:\Mladen_Matic_RA44-2015\ChatApp2\ChatApp2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://D:\Mladen_Matic_RA44-2015\ChatApp2\app\app.iml" filepath="D:\Mladen_Matic_RA44-2015\ChatApp2\app\app.iml" />
     </modules>
   </component>
 </project>

@@ -45,14 +45,14 @@ public class HttpHelper {
         String line;
 
         while ((line = bufferedReader.readLine()) != null) {
-            stringBuilder.append(line + "\n");
+            stringBuilder.append(line);
         }
         bufferedReader.close();
 
         int responseCode = urlConnection.getResponseCode();
         urlConnection.disconnect();
-
-        return responseCode == SUCCESS;
+        Log.d("String: ", stringBuilder.toString());
+        return stringBuilder.toString().equals("true");
     }
 
     public JSONArray getJSONArrayFromURL(String urlString, String sessionId) throws IOException, JSONException {
