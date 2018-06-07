@@ -185,7 +185,7 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher{
                                     }  else if(response.mResponseCode == 409) {
                                                 Toast.makeText(getApplicationContext(), "USER EXISTS!", Toast.LENGTH_LONG).show();
                                     } else {
-                                                Toast.makeText(getApplicationContext(), "INTERNAL ERROR!", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getApplicationContext(), "INTERNAL ERROR! " + String.valueOf(response.mResponseCode), Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });

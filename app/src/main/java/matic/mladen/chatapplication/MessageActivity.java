@@ -111,7 +111,7 @@ public class MessageActivity extends AppCompatActivity {
                                 jsonObject.put("receiver", mMe);
                                 jsonObject.put("sender", mFriend);
                             }
-                            jsonObject.put("data", message.getMessage());
+                            jsonObject.put("data", JNIxor.encryption(message.getMessage()));
                             final HttpHelper.RetrunClass response = mHttpHelper.httpDelete("http://18.205.194.168:80/message", jsonObject, mSessionId);
                             mHandler.post(new Runnable() {
                                 @Override
@@ -213,7 +213,7 @@ public class MessageActivity extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject();
                             jsonObject.put("receiver", mFriend);
-                            jsonObject.put("data", message_activity_message_text.getText().toString());
+                            jsonObject.put("data", JNIxor.encryption(message_activity_message_text.getText().toString()));
                             final HttpHelper.RetrunClass response = mHttpHelper.postJSONObjectFromURL("http://18.205.194.168:80/message", jsonObject, mSessionId);
                             mHandler.post(new Runnable() {
                                 @Override
@@ -269,7 +269,7 @@ public class MessageActivity extends AppCompatActivity {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             String sender = jsonObject.getString("sender");
                             String data = jsonObject.getString("data");
-                            adapter.addMessage(new matic.mladen.chatapplication.Message(data, sender.equals(mMe), sender));
+                            adapter.addMessage(new matic.mladen.chatapplication.Message(JNIxor.decryption(data), sender.equals(mMe), sender));
                         }
                     }
                 } catch (JSONException e) {
